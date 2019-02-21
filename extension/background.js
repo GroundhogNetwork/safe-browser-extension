@@ -11,6 +11,7 @@ import {
   addTransaction,
   removeAllTransactions
 } from 'actions/transactions'
+import { addSignMessage, removeSignMessage } from 'actions/signMessages'
 import { SAFE_ALREADY_EXISTS } from '../config/messages'
 import { ADDRESS_ZERO } from '../app/utils/helpers'
 
@@ -59,6 +60,12 @@ chrome.runtime.onMessage.addListener(
       case messages.MSG_SHOW_POPUP_TX:
         if (isWhiteListedDapp(normalizeUrl(sender.tab.url))) {
           showSendTransactionPopup(request.tx, sender.tab.windowId, sender.tab.id)
+        }
+        break
+
+      case messages.MSG_SHOW_POPUP_SIGNATURE:
+        if (isWhiteListedDapp(normalizeUrl(sender.tab.url))) {
+          showSendSignaturePopup(request.message, sender.tab.windowId, sender.tab.id)
         }
         break
 
@@ -160,6 +167,12 @@ const showSendTransactionPopup = (transaction, dappWindowId, dappTabId) => {
   showTransactionPopup(transaction, dappWindowId, dappTabId)
 }
 
+const showSendSignaturePopup = (message, dappWindowId, dappTabId) => {
+  popupController.showPopup(
+    (window) => storageController.getStore().dispatch(addSignMessage(message, window.id, dappWindowId, dappTabId))
+  )
+}
+
 let lockingTimer = null
 const lockAccountTimer = () => {
   if (lockingTimer !== null) {
@@ -186,6 +199,7 @@ const setPendingTransaction = (position) => {
 }
 
 chrome.windows.onRemoved.addListener((windowId) => {
+  const signMessages = storageController.getStoreState().signMessages
   const transactions = storageController.getStoreState().transactions
 
   if (transactions && (windowId === transactions.windowId)) {
@@ -206,10 +220,16 @@ chrome.windows.onRemoved.addListener((windowId) => {
     storageController.getStore().dispatch(removeAllTransactions())
     popupController.handleClosePopup()
   }
+
+  if (signMessages && (windowId === signMessages.windowId)) {
+    storageController.getStore().dispatch(removeSignMessage())
+    popupController.handleClosePopup()
+  }
 })
 
 storageController.getStore().dispatch(lockAccount())
 storageController.getStore().dispatch(removeAllTransactions())
+storageController.getStore().dispatch(removeSignMessage())
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', (event) => {

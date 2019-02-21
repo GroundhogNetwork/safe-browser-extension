@@ -36,6 +36,13 @@ const activeListeners = (currentSafe) => {
     })
   })
 
+  window.addEventListener(messages.EV_SHOW_POPUP_SIGNATURE, (data) => {
+    chrome.runtime.sendMessage({
+      msg: messages.MSG_SHOW_POPUP_SIGNATURE,
+      message: data.detail
+    })
+  })
+
   chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
       switch (request.msg) {
