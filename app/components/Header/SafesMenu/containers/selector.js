@@ -1,12 +1,12 @@
 import { createStructuredSelector } from 'reselect'
 import {
   safesSelector,
-  selectCurrentSafeAlias,
+  selectCurrentSafeAliasSelector,
   selectCurrentTransactionSafeAlias
 } from '../store/selectors'
 
 export default (state, props) => createStructuredSelector({
   safes: safesSelector,
-  extensionTitle: selectCurrentSafeAlias,
+  extensionTitle: selectCurrentSafeAliasSelector,
   popupTitle: selectCurrentTransactionSafeAlias()
 })
