@@ -3,7 +3,7 @@
     "message": "Retry"
   },
   "estimated_transaction_fee": {
-    "message": "Estimated Transaction Fee"
+    "message": "Estimated Network Fee"
   },
   "review_transaction": {
     "message": "Review transaction"
@@ -268,5 +268,8 @@
   },
   "payment_token": {
     "message": "Payment token (for network fees)"
+  },
+  "review_sign_message": {
+    "message": "Review signature"
   }
 }

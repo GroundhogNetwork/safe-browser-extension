@@ -265,5 +265,11 @@
   },
   "approve": {
     "message": "Approvare"
+  },
+  "payment_token": {
+    "message": "Token di pagamento (per commissioni di rete)"
+  },
+  "review_sign_message": {
+    "message": "Rivedi la firma"
   }
 }
