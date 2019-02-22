@@ -36,14 +36,14 @@ class Header extends Component {
       showSafes
     } = this.state
     const {
-      txReview,
+      isPopup,
       location
     } = this.props
 
     return (
       <React.Fragment>
         <header>
-          {!txReview &&
+          {!isPopup &&
             <div
               className={cx(styles.menuTrigger, showMenu ? styles.active : null)}
               onClick={this.toggleMenu}
@@ -56,11 +56,11 @@ class Header extends Component {
           <SafesMenu
             toggleSafes={this.toggleSafes}
             showSafes={showSafes}
-            showingTransaction={txReview}
+            isPopup={isPopup}
           />
           <LockingState location={location} />
         </header>
-        {!txReview &&
+        {!isPopup &&
           <NavigationDrawer
             showMenu={showMenu}
             toggleMenu={this.toggleMenu}

@@ -179,7 +179,7 @@ class Transaction extends Component {
         <div className={styles.extensionInner}>
           <Header
             noBorder
-            txReview
+            isPopup
             location={location}
           />
           <div className={styles.Page}>
