@@ -23,7 +23,11 @@ export const normalizeUrl = (url) => {
 }
 
 export const shortenAddress = (address) => {
-  const checksumedAddress = address && EthUtil.toChecksumAddress(address)
+  if (!address) {
+    return null
+  }
+
+  const checksumedAddress = EthUtil.toChecksumAddress(address)
   return checksumedAddress &&
     checksumedAddress.substring(0, 8) +
     '...' +

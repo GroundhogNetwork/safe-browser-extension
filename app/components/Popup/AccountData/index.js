@@ -15,18 +15,22 @@ const AccountData = ({
 
   return (
     <div className={noBalance ? styles.transactionRecipient : styles.transactionFrom}>
-      <span>
-        <div className={styles.identicon}>
-          <Blockie address={address} diameter={32} />
-        </div>
-        <p>
-          <i>{alias}</i>
-          <small>{shortenAddress(address)}</small>
-        </p>
-      </span>
-      {!noBalance &&
-      <span><small>{addressBalance} {symbol}</small></span>
-      }
+      {address && (
+        <React.Fragment>
+          <span>
+            <div className={styles.identicon}>
+              <Blockie address={address} diameter={32} />
+            </div>
+            <p>
+              <i>{alias}</i>
+              <small>{shortenAddress(address)}</small>
+            </p>
+          </span>
+          {!noBalance &&
+            <span><small>{addressBalance} {symbol}</small></span>
+          }
+        </React.Fragment>
+      )}
     </div>
   )
 }
