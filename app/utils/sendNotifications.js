@@ -1,17 +1,10 @@
 import EthUtil from 'ethereumjs-util'
 import BigNumber from 'bignumber.js'
 import 'babel-polyfill'
-import TruffleContract from 'truffle-contract'
-import Web3 from 'web3'
 import fetch from 'node-fetch'
+import { getPushNotificationServiceUrl } from '../../config'
+import { getOwners } from 'logic/contracts/safeContracts'
 
-import { getTransactionEstimations } from 'routes/popup/Transaction/components/SendTransaction/containers/gasData'
-import { isTokenTransfer } from 'routes/popup/Transaction/containers/tokens'
-import GnosisSafe from '../../contracts/GnosisSafe.json'
-import {
-  getPushNotificationServiceUrl,
-  getNetworkUrl
-} from '../../config'
 
 export const sendTransaction = async (
   accountAddress,
@@ -79,7 +72,7 @@ export const sendNotification = async (
 ) => {
   let owners
   try {
-    owners = await getOwners(accountAddress, safeAddress)
+    owners = await getOwners(safeAddress, accountAddress)
   } catch (err) {
     console.error(err)
     return
@@ -112,30 +105,4 @@ export const sendNotification = async (
     credentials: 'omit',
     referrerPolicy: 'no-referrer'
   })
-}
-
-export const getOwners = async (accountAddress, safeAddress) => {
-  const contract = TruffleContract(GnosisSafe)
-  const provider = new Web3.providers.HttpProvider(getNetworkUrl())
-  contract.setProvider(provider)
-
-  try {
-    const instance = await contract.at(safeAddress)
-    const owners = await instance.getOwners.call()
-    const destOwners = owners.filter(owner => owner.toLowerCase() !== accountAddress.toLowerCase())
-    return destOwners.map(owner => EthUtil.toChecksumAddress(owner))
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-export const getNonce = async (tx) => {
-  if (tx.type === 'sendTransaction') {
-    const estimationValue = isTokenTransfer(tx.data) ? '0' : tx.displayedValue.toString(10)
-    const estimations = await getTransactionEstimations(tx.from, tx.to, estimationValue, tx.data, 0, tx.gasToken)
-    const lastUsedNonce = (estimations.lastUsedNonce === null) ? 0 : estimations.lastUsedNonce + 1
-
-    return estimations && lastUsedNonce.toString()
-  }
-  return null
 }
